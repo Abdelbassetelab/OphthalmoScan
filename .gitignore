@@ -37,3 +37,12 @@ next-env.d.ts
 # IDE
 .vscode/
 .idea/
+
+# Supabase
+/supabase/.temp
+*.db
+*.sqlite
+*.sqlite3
+
+# OS
+Thumbs.db
