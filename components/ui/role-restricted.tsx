@@ -1,32 +1,28 @@
-import React from "react";
-import { useAuth } from "@clerk/nextjs";
-import { UserRole } from "@/lib/auth/clerk-auth";
+'use client';
 
-type RoleRestrictedProps = {
-  children: React.ReactNode;
+import { useUserRole } from '@/hooks/use-user-role';
+import type { UserRole } from '@/lib/auth/clerk-auth';
+import { PropsWithChildren } from 'react';
+
+interface RoleRestrictedProps extends PropsWithChildren {
   allowedRoles: UserRole[];
   fallback?: React.ReactNode;
-};
+}
 
 export function RoleRestricted({ 
   children, 
-  allowedRoles,
+  allowedRoles, 
   fallback = null 
 }: RoleRestrictedProps) {
-  const { isLoaded, userId, user } = useAuth();
-  
-  // While auth is loading, show nothing
-  if (!isLoaded) return null;
-  
-  // If user isn't authenticated, show fallback
-  if (!userId) return <>{fallback}</>;
-  
-  // Get user role from metadata
-  const userRole = (user?.publicMetadata?.role as UserRole) || "patient";
-  
-  // If user doesn't have required role, show fallback
-  if (!allowedRoles.includes(userRole)) return <>{fallback}</>;
-  
-  // User has required role, show children
+  const { role, isLoading } = useUserRole();
+
+  if (isLoading) {
+    return null;
+  }
+
+  if (!role || !allowedRoles.includes(role)) {
+    return fallback;
+  }
+
   return <>{children}</>;
 }
