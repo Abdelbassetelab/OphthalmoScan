@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronLeft, ChevronRight, Home, Users, FileImage, Activity, Settings, User } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home, Users, FileImage, Activity, Settings, User, Eye } from 'lucide-react';
 
 type MenuItem = {
   path: string;
@@ -40,10 +40,21 @@ export default function CollapsibleSidebar({ userRole = 'patient' }: Collapsible
         collapsed ? 'w-20' : 'w-64'
       }`}
     >
-      <div className="flex justify-end p-4">
+      {/* Logo Section with collapse button next to it */}
+      <div className="h-16 flex items-center justify-between border-b border-gray-200 px-4">
+        <Link href="/dashboard" className={`flex ${collapsed ? 'justify-center' : 'items-center space-x-3'}`}>
+          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
+            <Eye className="h-5 w-5 text-white" />
+          </div>
+          {!collapsed && (
+            <span className="font-bold text-lg text-blue-600">OphthalmoScan</span>
+          )}
+        </Link>
+        
+        {/* Collapse toggle button moved next to logo */}
         <button 
           onClick={() => setCollapsed(!collapsed)}
-          className="p-1 rounded-md hover:bg-gray-100 transition-colors"
+          className="p-1 rounded-md hover:bg-gray-100 transition-colors flex-shrink-0"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}

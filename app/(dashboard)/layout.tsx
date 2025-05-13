@@ -1,48 +1,53 @@
 'use client';
 
-import React from 'react';
-import { SignedIn, UserButton } from '@clerk/nextjs';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import CollapsibleSidebar from '@/components/layouts/collapsible-sidebar';
+import React, { useState } from 'react';
+import { Sidebar } from '@/components/layouts/Sidebar';
+import { Navbar } from '@/components/layouts/Navbar';
+import { useAuthContext } from '@/context/auth-context';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const { isLoading, isAuthenticated } = useAuthContext();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="w-12 h-12 border-4 border-blue-200 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <h1 className="text-xl text-gray-700 mb-4">Please sign in to access the dashboard</h1>
+          <a href="/login" className="text-blue-600 hover:text-blue-800">
+            Go to login page
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm py-4">
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <Link href="/" className="text-xl font-bold text-primary">
-            OphthalmoScan-AI
-          </Link>
-          
-          <div className="flex items-center gap-4">
-            <SignedIn>
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">My Account</span>
-                <UserButton 
-                  afterSignOutUrl="/"
-                  appearance={{
-                    elements: {
-                      userButtonAvatarBox: "w-10 h-10"
-                    }
-                  }}
-                />
-              </div>
-            </SignedIn>
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar collapsed={sidebarCollapsed} />
+      
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <Navbar 
+          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          sidebarCollapsed={sidebarCollapsed}
+        />
+        
+        <main className="flex-1 overflow-y-auto p-6">
+          <div className="container mx-auto">
+            {children}
           </div>
-        </div>
-      </header>
-
-      <div className="flex">
-        <CollapsibleSidebar />
-        <main className="flex-1 p-6">
-          {children}
         </main>
       </div>
     </div>

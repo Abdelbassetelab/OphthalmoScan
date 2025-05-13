@@ -5,7 +5,7 @@ const nextConfig = {
     serverActions: true,
   },
   images: {
-    domains: ['localhost'],
+    domains: ['localhost', 'img.clerk.com'],
     // Add other domains here once you have Supabase storage or other image sources set up
   },
   webpack: (config) => {

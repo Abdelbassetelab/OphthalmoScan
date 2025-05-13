@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useAuth } from '@clerk/nextjs'
-import { setRole, removeRole } from '@/app/admin/_actions'
+import { setRole, removeRole } from '@/app/management/_actions'
 
 export default function UsersManagement() {
   const { getToken } = useAuth()
